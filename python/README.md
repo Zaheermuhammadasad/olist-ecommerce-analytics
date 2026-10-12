@@ -2,6 +2,8 @@
 
 ## Setup
 
+Download the required Olist source CSVs, then place these eight files in `python/data/`: orders, customers, order items, products, sellers, payments, reviews, and product category translations. The geolocation file is not used by the current script because repeated ZIP prefixes need aggregation before mapping.
+
 From the repository root:
 
 ```bash
@@ -11,10 +13,8 @@ python -m pip install -r python/requirements.txt
 python python/olist_analysis.py
 ```
 
-On Windows activate using `.venv\\Scripts\\activate`.
+On Windows activate with `.venv\\Scripts\\activate`.
 
-Put the nine Olist CSVs in `data/` with their original filenames. Raw data is excluded from GitHub because of repository size limits. The full project ZIP supplied alongside this repository contains a local copy of the data and generated outputs.
+The script writes data-quality summaries, monthly GMV/AOV, category and seller performance, customer value, payment mix, delivery KPIs, state-level delivery metrics, delay buckets, delivery-vs-review summary and PNG charts into `python/outputs/`.
 
-The script exports data-quality checks, monthly GMV/AOV, category and seller performance, customer value, payment mix, delivery KPIs, state-level delivery metrics, delay buckets, review-vs-delivery summary and PNG charts into `outputs/`.
-
-Metric safeguards: distinct order counting, item-price GMV excluding freight, review aggregation to order grain, and explicit delivery eligibility filters.
+Metric safeguards: orders are counted distinctly, item-price GMV excludes freight, reviews are aggregated to order grain before joining, and delivery eligibility filters are explicit.
