@@ -1,27 +1,20 @@
-# Python Analysis
+# Python Analytics
 
 ## Setup
 
+From the repository root:
+
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r python/requirements.txt
+python python/olist_analysis.py
 ```
 
-On Windows, activate the environment with `.venv\\Scripts\\activate`.
+On Windows activate using `.venv\\Scripts\\activate`.
 
-## Data
+Put the nine Olist CSVs in `data/` with their original filenames. Raw data is excluded from GitHub because of repository size limits. The full project ZIP supplied alongside this repository contains a local copy of the data and generated outputs.
 
-Create a local `data/` directory and place the public Olist CSV files inside it. Raw data is not committed to this repository.
+The script exports data-quality checks, monthly GMV/AOV, category and seller performance, customer value, payment mix, delivery KPIs, state-level delivery metrics, delay buckets, review-vs-delivery summary and PNG charts into `outputs/`.
 
-## Run
-
-```bash
-python olist_analysis.py
-```
-
-The script creates an `output/` directory containing data-quality, delivery, monthly-order and customer KPI tables.
-
-## Why Python is included
-
-SQL is used for relational analysis and reproducible business queries. Python is used for profiling, validation, transformation and export of analysis-ready outputs. The two layers should produce consistent KPI definitions.
+Metric safeguards: distinct order counting, item-price GMV excluding freight, review aggregation to order grain, and explicit delivery eligibility filters.
