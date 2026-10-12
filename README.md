@@ -4,7 +4,7 @@ An end-to-end e-commerce analytics project using the Brazilian E-Commerce Public
 
 **Tools:** MySQL · SQL · Python · Pandas · Plotly · GitHub
 
-**[Open the interactive dashboard](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Zaheermuhammadasad/olist-ecommerce-analytics/main/dashboard/olist_recruiter_dashboard.html)** · **[View business insights](analysis/business_insights.md)** · **[Read setup instructions](documentation/getting_started.md)**
+**[Open the interactive dashboard](https://htmlpreview.github.io/?https://github.com/Zaheermuhammadasad/olist-ecommerce-analytics/blob/main/dashboard/olist_recruiter_dashboard.html)** · **[View business insights](analysis/business_insights.md)** · **[Read setup instructions](documentation/getting_started.md)**
 
 ## Project overview
 
@@ -50,7 +50,7 @@ The repository includes a browser-based Plotly dashboard with KPI cards and inte
 - Delivery-delay distribution
 - Average review score by delivery performance
 
-**[Launch the dashboard preview](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Zaheermuhammadasad/olist-ecommerce-analytics/main/dashboard/olist_recruiter_dashboard.html)**
+**[Launch the dashboard preview](https://htmlpreview.github.io/?https://github.com/Zaheermuhammadasad/olist-ecommerce-analytics/blob/main/dashboard/olist_recruiter_dashboard.html)**
 
 The preview uses a third-party HTML preview service and loads Plotly from a CDN. The dashboard source is available in the repository at dashboard/olist_recruiter_dashboard.html. This is a web dashboard, not a native Power BI PBIX or Tableau TWB report.
 
