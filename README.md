@@ -17,7 +17,7 @@ An end-to-end analytics portfolio project using the Brazilian E-Commerce Public 
 
 ## Dataset
 
-The public dataset has nine related CSV tables. The full raw CSV files are provided locally in the downloadable project ZIP and are excluded from this GitHub repository because the geolocation file is large. Download the Olist Brazilian E-Commerce dataset separately and put the required CSVs in `python/data/` to run the Python script. The SQL scripts expect tables imported into MySQL using their base filenames (without `.csv`).
+The public dataset has nine related CSV tables. The full raw CSV files are included in the downloadable project ZIP under `python/data/` and excluded from this GitHub repository because the geolocation file is large. Download the Olist Brazilian E-Commerce dataset separately and put the required CSVs in `python/data/` to run the Python script. The SQL scripts expect tables imported into MySQL using their base filenames (without `.csv`).
 
 ## Repository contents
 
