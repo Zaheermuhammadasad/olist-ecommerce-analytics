@@ -1,39 +1,29 @@
-# BI Dashboard Specification
+# Interactive Dashboard
 
-This document specifies the report design and KPI definitions. Build the native report in Power BI Desktop or Tableau; generated CSVs and charts are included in the downloadable project ZIP.
+## Open the dashboard
 
-## Page 1 — Executive Overview
+**[Launch the interactive dashboard preview](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Zaheermuhammadasad/olist-ecommerce-analytics/main/dashboard/olist_recruiter_dashboard.html)**
 
-KPI cards: orders, item-price GMV, AOV, delivered orders, late-delivery rate and average review score. Charts: monthly GMV, order status and yearly delivery performance.
+Source file: olist_recruiter_dashboard.html
 
-## Page 2 — Sales & Products
+The dashboard is a static HTML page with Plotly charts. The charts provide hover details and interactive controls. It loads Plotly from a CDN, so an internet connection is needed when opening the page.
 
-Top categories by GMV, monthly GMV and order volume, top sellers by GMV, category orders versus GMV. Slicers: purchase month, category and seller state.
+## What's included
 
-## Page 3 — Customers & Payments
+- Executive KPI cards for orders, item-price GMV, eligible delivered orders, late-delivery rate, and average delivery duration.
+- Late-delivery rate by year.
+- Top product categories by item-price GMV.
+- Payment-value mix.
+- Delivery-delay distribution.
+- Average review score by delivery performance.
+- A short set of descriptive business insights.
 
-One-time versus repeat customers, customer lifetime GMV distribution, payment value by type and installments. Use `customer_unique_id` for person-level repeat metrics.
+## KPI definitions and caveats
 
-## Page 4 — Operations & Customer Experience
+- GMV is the sum of item prices and excludes freight; it is not profit.
+- Delivery performance includes delivered-status orders with both actual and estimated delivery timestamps.
+- Late means actual delivery is strictly later than the estimated delivery timestamp.
+- Review comparisons are descriptive and do not establish causation.
+- The dashboard is a browser-based interactive HTML deliverable, not a native Power BI PBIX or Tableau TWB file.
 
-Late-delivery rate by customer state (with volume), delay buckets, yearly delivery trend and average review score for late versus on-time/early deliveries.
-
-## KPI definitions
-
-| KPI | Definition | Caution |
-|---|---|---|
-| Orders | Distinct order IDs | Do not use item rows as orders |
-| GMV | Sum of item price | Freight excluded; not profit |
-| AOV | GMV / distinct orders | Keep population consistent |
-| Eligible delivered orders | Delivered status plus both actual and estimated timestamps | Eight delivered-status rows lack actual dates |
-| Late-delivery rate | Late / eligible delivered orders | Actual must be strictly later than estimate |
-| Average review score | Average review score | Aggregate review rows to order grain before joining |
-| Repeat customer | More than one order by a person key | Use customer_unique_id |
-
-## Relationships
-
-Orders to order items by order_id; customers to orders by customer_id; products and sellers to order items by their IDs; orders to payments and reviews by order_id. Aggregate geolocation before using it because ZIP prefixes repeat.
-
-## Validation
-
-Validate order, GMV and delivery totals against the Python outputs. Annotate the order-status population and eligibility filters used in each visual.
+For the full KPI specification and planned extensions, see the project data dictionary and analysis documentation.
