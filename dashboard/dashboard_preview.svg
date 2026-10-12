@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820" role="img" aria-labelledby="title desc">
+<title id="title">Olist E-commerce Analytics Dashboard preview</title>
+<desc id="desc">Dashboard preview with order and GMV KPI cards, late delivery rate by year, category GMV, delay distribution, payment mix, and review score comparison.</desc>
+<defs>
+  <style>
+    .bg{fill:#f3f6fb}.panel{fill:#fff;stroke:#e4e9f2;stroke-width:1.2}.title{font:700 30px Arial,sans-serif;fill:#16233a}.sub{font:14px Arial,sans-serif;fill:#64748b}.klabel{font:12px Arial,sans-serif;fill:#64748b}.kvalue{font:700 25px Arial,sans-serif;fill:#172b4d}.ctitle{font:700 16px Arial,sans-serif;fill:#172b4d}.lbl{font:12px Arial,sans-serif;fill:#58677e}.small{font:11px Arial,sans-serif;fill:#64748b}.axis{stroke:#e4e9f2;stroke-width:1}.blue{fill:#4677d5}.teal{fill:#18a6a6}.navy{fill:#27466f}.orange{fill:#e6a23c}.muted{fill:#dfe7f5}
+  </style>
+</defs>
+<rect class="bg" width="1280" height="820" rx="18"/>
+<text class="title" x="40" y="49">Olist E-commerce Analytics</text>
+<text class="sub" x="40" y="73">Sales, payments, delivery performance and customer reviews · Brazil</text>
+<text x="1238" y="48" text-anchor="end" style="font:700 11px Arial;fill:#4677d5;letter-spacing:1px">PORTFOLIO DASHBOARD</text>
+<!-- KPI cards -->
+<g>
+<rect class="panel" x="40" y="92" width="228" height="88" rx="12"/><text class="klabel" x="58" y="117">TOTAL ORDERS</text><text class="kvalue" x="58" y="151">99,441</text>
+<rect class="panel" x="284" y="92" width="228" height="88" rx="12"/><text class="klabel" x="302" y="117">ITEM-PRICE GMV</text><text class="kvalue" x="302" y="151">R$13.59M</text>
+<rect class="panel" x="528" y="92" width="228" height="88" rx="12"/><text class="klabel" x="546" y="117">ELIGIBLE DELIVERIES</text><text class="kvalue" x="546" y="151">96,470</text>
+<rect class="panel" x="772" y="92" width="228" height="88" rx="12"/><text class="klabel" x="790" y="117">LATE-DELIVERY RATE</text><text class="kvalue" x="790" y="151">8.11%</text>
+<rect class="panel" x="1016" y="92" width="224" height="88" rx="12"/><text class="klabel" x="1034" y="117">AVG. DELIVERY TIME</text><text class="kvalue" x="1034" y="151">12.56 days</text>
+</g>
+<!-- Year trend -->
+<rect class="panel" x="40" y="198" width="640" height="266" rx="12"/>
+<text class="ctitle" x="60" y="226">Late Delivery Rate by Year</text><text class="small" x="60" y="245">Share of eligible delivered orders</text>
+<line class="axis" x1="95" y1="410" x2="642" y2="410"/><line class="axis" x1="95" y1="360" x2="642" y2="360"/><line class="axis" x1="95" y1="310" x2="642" y2="310"/><line class="axis" x1="95" y1="260" x2="642" y2="260"/>
+<text class="small" x="83" y="414" text-anchor="end">0%</text><text class="small" x="83" y="364" text-anchor="end">3%</text><text class="small" x="83" y="314" text-anchor="end">6%</text><text class="small" x="83" y="264" text-anchor="end">9%</text>
+<path d="M170 385 L360 300 L550 254" fill="none" stroke="#4677d5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="170" cy="385" r="6" fill="#4677d5"/><circle cx="360" cy="300" r="6" fill="#4677d5"/><circle cx="550" cy="254" r="6" fill="#4677d5"/>
+<text x="170" y="372" text-anchor="middle" style="font:700 13px Arial;fill:#27466f">1.50%</text><text x="360" y="287" text-anchor="middle" style="font:700 13px Arial;fill:#27466f">6.63%</text><text x="550" y="241" text-anchor="middle" style="font:700 13px Arial;fill:#27466f">9.37%</text>
+<text class="lbl" x="170" y="433" text-anchor="middle">2016</text><text class="lbl" x="360" y="433" text-anchor="middle">2017</text><text class="lbl" x="550" y="433" text-anchor="middle">2018</text>
+<!-- Category chart -->
+<rect class="panel" x="696" y="198" width="544" height="266" rx="12"/>
+<text class="ctitle" x="716" y="226">Top Categories by Item-price GMV</text><text class="small" x="716" y="245">Freight excluded · Brazilian reais</text>
+<g class="lbl">
+<text x="716" y="278">Health &amp; Beauty</text><rect class="muted" x="850" y="264" width="300" height="16" rx="4"/><rect class="blue" x="850" y="264" width="300" height="16" rx="4"/><text x="1217" y="277" text-anchor="end">1.259M</text>
+<text x="716" y="314">Watches &amp; Gifts</text><rect class="muted" x="850" y="300" width="300" height="16" rx="4"/><rect class="blue" x="850" y="300" width="287" height="16" rx="4"/><text x="1217" y="313" text-anchor="end">1.205M</text>
+<text x="716" y="350">Bed Bath Table</text><rect class="muted" x="850" y="336" width="300" height="16" rx="4"/><rect class="blue" x="850" y="336" width="247" height="16" rx="4"/><text x="1217" y="349" text-anchor="end">1.037M</text>
+<text x="716" y="386">Sports Leisure</text><rect class="muted" x="850" y="372" width="300" height="16" rx="4"/><rect class="blue" x="850" y="372" width="235" height="16" rx="4"/><text x="1217" y="385" text-anchor="end">0.988M</text>
+<text x="716" y="422">Computers Accessories</text><rect class="muted" x="850" y="408" width="300" height="16" rx="4"/><rect class="blue" x="850" y="408" width="217" height="16" rx="4"/><text x="1217" y="421" text-anchor="end">0.912M</text>
+</g>
+<!-- Delay distribution -->
+<rect class="panel" x="40" y="482" width="380" height="260" rx="12"/>
+<text class="ctitle" x="60" y="510">Delivery Delay Distribution</text><text class="small" x="60" y="529">Order count by delay bucket</text>
+<g class="lbl"><text x="60" y="561">On time / early</text><rect class="muted" x="60" y="570" width="300" height="12" rx="4"/><rect class="teal" x="60" y="570" width="300" height="12" rx="4"/><text x="360" y="561" text-anchor="end">88,644</text>
+<text x="60" y="604">1–7 days late</text><rect class="muted" x="60" y="613" width="300" height="12" rx="4"/><rect class="orange" x="60" y="613" width="15" height="12" rx="4"/><text x="360" y="604" text-anchor="end">4,481</text>
+<text x="60" y="647">8–14 days late</text><rect class="muted" x="60" y="656" width="300" height="12" rx="4"/><rect class="orange" x="60" y="656" width="6" height="12" rx="4"/><text x="360" y="647" text-anchor="end">1,790</text>
+<text x="60" y="690">15+ days late</text><rect class="muted" x="60" y="699" width="300" height="12" rx="4"/><rect class="orange" x="60" y="699" width="5" height="12" rx="4"/><text x="360" y="690" text-anchor="end">1,555</text></g>
+<!-- Payment mix -->
+<rect class="panel" x="440" y="482" width="380" height="260" rx="12"/>
+<text class="ctitle" x="460" y="510">Payment Value Mix</text><text class="small" x="460" y="529">Value of recorded payments</text>
+<g class="lbl"><text x="460" y="561">Credit card</text><rect class="muted" x="460" y="570" width="245" height="15" rx="4"/><rect class="blue" x="460" y="570" width="245" height="15" rx="4"/><text x="800" y="561" text-anchor="end">R$12.54M</text>
+<text x="460" y="604">Boleto</text><rect class="muted" x="460" y="613" width="245" height="15" rx="4"/><rect class="teal" x="460" y="613" width="56" height="15" rx="4"/><text x="800" y="604" text-anchor="end">R$2.87M</text>
+<text x="460" y="647">Voucher</text><rect class="muted" x="460" y="656" width="245" height="15" rx="4"/><rect class="orange" x="460" y="656" width="8" height="15" rx="4"/><text x="800" y="647" text-anchor="end">R$0.38M</text>
+<text x="460" y="690">Debit card</text><rect class="muted" x="460" y="699" width="245" height="15" rx="4"/><rect class="navy" x="460" y="699" width="5" height="15" rx="4"/><text x="800" y="690" text-anchor="end">R$0.22M</text></g>
+<!-- Reviews -->
+<rect class="panel" x="840" y="482" width="400" height="260" rx="12"/>
+<text class="ctitle" x="860" y="510">Delivery Performance &amp; Reviews</text><text class="small" x="860" y="529">Average review score (scale 1 to 5)</text>
+<text class="lbl" x="860" y="566">Late orders</text><rect class="muted" x="860" y="576" width="290" height="24" rx="5"/><rect class="orange" x="860" y="576" width="149" height="24" rx="5"/><text x="1210" y="593" text-anchor="end" style="font:700 13px Arial;fill:#172b4d">2.57 / 5</text>
+<text class="lbl" x="860" y="625">On-time / early</text><rect class="muted" x="860" y="635" width="290" height="24" rx="5"/><rect class="teal" x="860" y="635" width="249" height="24" rx="5"/><text x="1210" y="652" text-anchor="end" style="font:700 13px Arial;fill:#172b4d">4.29 / 5</text>
+<rect x="860" y="680" width="350" height="39" rx="8" fill="#eef4ff"/><text x="875" y="696" style="font:700 11px Arial;fill:#27466f">KEY TAKEAWAY</text><text x="875" y="710" style="font:11px Arial;fill:#27466f">Late deliveries coincide with lower ratings.</text>
+<text class="small" x="40" y="783">GMV = item price, freight excluded. Delivery metrics use eligible delivered orders with both actual and estimated timestamps. Findings are descriptive, not causal.</text>
+</svg>
