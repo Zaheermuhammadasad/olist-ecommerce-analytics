@@ -1,52 +1,43 @@
-# Data Dictionary
+# Data Dictionary — Olist Brazilian E-Commerce
 
-The project uses the Brazilian E-Commerce Public Dataset by Olist. The table names below correspond to the standard CSV dataset and the intended MySQL model.
+## Source files and grain
 
-## Core Tables
+| File / logical table | Supplied rows | Grain / key | Main use |
+|---|---:|---|---|
+| `olist_orders_dataset.csv` | 99,441 | One per `order_id` | Order lifecycle and delivery |
+| `olist_customers_dataset.csv` | 99,441 | One per `customer_id`; `customer_unique_id` represents person identity | Customer state and repeat behavior |
+| `olist_order_items_dataset.csv` | 112,650 | One per `order_id` + `order_item_id` | Item GMV, freight, category and seller |
+| `olist_products_dataset.csv` | 32,951 | One per `product_id` | Product category and dimensions |
+| `olist_sellers_dataset.csv` | 3,095 | One per `seller_id` | Seller performance and state |
+| `olist_order_payments_dataset.csv` | 103,886 | Payment record; multiple rows per order possible | Payment mix and installments |
+| `olist_order_reviews_dataset.csv` | 99,224 | Review record; multiple rows per order possible | Review satisfaction |
+| `olist_geolocation_dataset.csv` | 1,000,163 | Multiple locations per ZIP prefix | Geographic mapping after aggregation |
+| `product_category_name_translation.csv` | 71 | One per Portuguese category name | English category labels |
 
-| Table | Grain | Primary key | Main analytical use |
-|---|---|---|---|
-| customers | one row per customer-location record | customer_id | customer geography and mapping to customer_unique_id |
-| orders | one row per order | order_id | order lifecycle, dates, status and delivery |
-| order_items | one row per product line in an order | order_id + order_item_id | GMV, freight, products and sellers |
-| order_payments | one row per payment record | order_id + payment_sequential | payment method, value and installments |
-| order_reviews | review record linked to an order | review_id | satisfaction and review score |
-| products | one row per product | product_id | product category and product attributes |
-| sellers | one row per seller | seller_id | seller performance and geography |
-| geolocation | postal-code-prefix geography | geolocation_zip_code_prefix | geographic enrichment |
-| product_category_name_translation | category translation mapping | product_category_name | English category labels |
+## Relationships
 
-## Important Orders Fields
+- `orders.customer_id` → `customers.customer_id`
+- `order_items.order_id` → `orders.order_id`
+- `order_items.product_id` → `products.product_id`
+- `order_items.seller_id` → `sellers.seller_id`
+- `payments.order_id` → `orders.order_id`
+- `reviews.order_id` → `orders.order_id`
+- `products.product_category_name` → `product_category_name_translation.product_category_name`
 
-- `order_id`: unique order identifier.
-- `customer_id`: order-to-customer-location key.
-- `order_status`: lifecycle status such as delivered, shipped or canceled.
-- `order_purchase_timestamp`: purchase timestamp.
-- `order_approved_at`: payment approval timestamp.
-- `order_delivered_carrier_date`: date the carrier received the order.
-- `order_delivered_customer_date`: customer delivery timestamp.
-- `order_estimated_delivery_date`: promised/estimated delivery date.
+Geolocation ZIP prefixes repeat. Do not join the raw geolocation table directly to facts before reducing to a unique ZIP-prefix lookup, or records can multiply.
 
-## Important Order-Item Fields
+## Metric definitions
 
-- `order_id`: links item lines to orders.
-- `order_item_id`: item sequence within an order.
-- `product_id`: product key.
-- `seller_id`: seller key.
-- `price`: item price.
-- `freight_value`: freight charged for the item line.
+- **Orders:** distinct `order_id`.
+- **GMV:** sum of `order_items.price`; freight excluded, and this is not profit.
+- **AOV:** defined GMV divided by distinct orders for the same population.
+- **Unique customers:** distinct `customer_unique_id`, not `customer_id`.
+- **Repeat customer:** person key with more than one distinct order.
+- **Late delivery:** actual timestamp strictly later than estimated delivery timestamp; equality is on time.
+- **Eligible delivered order:** `order_status = 'delivered'` plus both actual and estimated delivery timestamps present.
+- **Review analysis:** aggregate review rows to order grain before joining order-level delivery metrics.
+- **Monthly GMV:** grouped by order purchase timestamp; state any order-status inclusion/exclusion.
 
-## Customer Identity
+## Data-quality checks
 
-`customer_id` identifies a customer-location record. `customer_unique_id` is the appropriate field for analysing repeat behaviour across orders because one unique customer can have multiple customer-location records.
-
-## Grain Rules
-
-1. Use `COUNT(DISTINCT order_id)` for order-level counts after joining order items, payments or reviews.
-2. Aggregate order items to `order_id` before calculating order-level GMV/AOV.
-3. Aggregate reviews to `order_id` before joining reviews to delivery metrics if multiple review records are present.
-4. Use `customer_unique_id` for customer-level repeat-purchase analysis.
-
-## Data Quality Checks
-
-Run `sql/01_data_quality.sql` before the analytical scripts. Check duplicates, null timestamps, timestamp sequence errors, orphan keys and referential integrity.
+The supplied data has 99,441 order rows and unique order IDs, 112,650 item rows and unique composite item keys, 103,886 payment rows and 99,224 review rows. Eight rows have delivered status but a missing actual delivery timestamp, so the strict delivery-performance denominator is 96,470 rather than the status-only count of 96,478.
