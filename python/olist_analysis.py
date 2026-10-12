@@ -1,92 +1,36 @@
-"""Olist E-Commerce Analytics - reproducible Python analysis.
-
-Place the public Olist CSV files in data/ before running.
-The script intentionally calculates metrics from the raw tables rather than
-hard-coding results.
-"""
+"""Olist E-Commerce reproducible Pandas analysis. Inputs: python/data/*.csv; outputs: python/outputs/."""
 from pathlib import Path
+import json
 import pandas as pd
-
-DATA = Path("data")
-OUTPUT = Path("output")
-OUTPUT.mkdir(exist_ok=True)
-
-FILES = {
-    "orders": "olist_orders_dataset.csv",
-    "customers": "olist_customers_dataset.csv",
-    "items": "olist_order_items_dataset.csv",
-    "payments": "olist_order_payments_dataset.csv",
-    "reviews": "olist_order_reviews_dataset.csv",
-    "products": "olist_products_dataset.csv",
-    "translations": "product_category_name_translation.csv",
-    "sellers": "olist_sellers_dataset.csv",
-}
-
-
-def load_csv(name: str) -> pd.DataFrame:
-    path = DATA / FILES[name]
-    if not path.exists():
-        raise FileNotFoundError(f"Missing {path}. Download the Olist dataset first.")
-    return pd.read_csv(path)
-
-
-def main() -> None:
-    orders = load_csv("orders")
-    customers = load_csv("customers")
-    items = load_csv("items")
-
-    orders["order_purchase_timestamp"] = pd.to_datetime(orders["order_purchase_timestamp"])
-    orders["order_delivered_customer_date"] = pd.to_datetime(orders["order_delivered_customer_date"])
-    orders["order_estimated_delivery_date"] = pd.to_datetime(orders["order_estimated_delivery_date"])
-
-    quality = pd.DataFrame({
-        "metric": ["order_rows", "unique_orders", "duplicate_order_rows"],
-        "value": [len(orders), orders["order_id"].nunique(), len(orders) - orders["order_id"].nunique()],
-    })
-    quality.to_csv(OUTPUT / "data_quality.csv", index=False)
-
-    delivered = orders[
-        (orders["order_status"] == "delivered")
-        & orders["order_delivered_customer_date"].notna()
-        & orders["order_estimated_delivery_date"].notna()
-    ].copy()
-    delivered["days_vs_estimated"] = (
-        delivered["order_delivered_customer_date"] - delivered["order_estimated_delivery_date"]
-    ).dt.days
-    delivered["late"] = delivered["days_vs_estimated"] > 0
-
-    delivery = pd.DataFrame({
-        "metric": ["delivered_orders", "late_orders", "late_pct"],
-        "value": [len(delivered), int(delivered["late"].sum()), round(delivered["late"].mean() * 100, 2)],
-    })
-    delivery.to_csv(OUTPUT / "delivery_kpis.csv", index=False)
-
-    monthly = (
-        orders.assign(month=orders["order_purchase_timestamp"].dt.to_period("M").astype(str))
-        .groupby("month", as_index=False)
-        .agg(orders=("order_id", "nunique"))
-    )
-    monthly.to_csv(OUTPUT / "monthly_orders.csv", index=False)
-
-    customer_orders = (
-        orders.merge(customers[["customer_id", "customer_unique_id"]], on="customer_id", how="left")
-        .groupby("customer_unique_id", as_index=False)
-        .agg(orders=("order_id", "nunique"))
-    )
-    customer_kpis = pd.DataFrame({
-        "metric": ["customers", "repeat_customers", "repeat_customer_pct"],
-        "value": [
-            len(customer_orders),
-            int((customer_orders["orders"] > 1).sum()),
-            round((customer_orders["orders"] > 1).mean() * 100, 2),
-        ],
-    })
-    customer_kpis.to_csv(OUTPUT / "customer_kpis.csv", index=False)
-
-    print("Analysis complete. Results written to output/")
-    print(quality.to_string(index=False))
-    print(delivery.to_string(index=False))
-
-
-if __name__ == "__main__":
-    main()
+import matplotlib.pyplot as plt
+ROOT = Path(__file__).resolve().parent
+RAW, OUT = ROOT / "data", ROOT / "outputs"
+OUT.mkdir(parents=True, exist_ok=True)
+FILES = {"orders":"olist_orders_dataset.csv","customers":"olist_customers_dataset.csv","items":"olist_order_items_dataset.csv","products":"olist_products_dataset.csv","sellers":"olist_sellers_dataset.csv","payments":"olist_order_payments_dataset.csv","reviews":"olist_order_reviews_dataset.csv","translations":"product_category_name_translation.csv"}
+missing=[f for f in FILES.values() if not (RAW/f).exists()]
+if missing: raise FileNotFoundError(f"Missing CSVs in {RAW}: {missing}. Download the Olist dataset and place files in python/data/.")
+data={k:pd.read_csv(RAW/f) for k,f in FILES.items()}
+orders,customers,items=data["orders"].copy(),data["customers"].copy(),data["items"].copy()
+products,sellers,payments,reviews,translations=data["products"],data["sellers"],data["payments"],data["reviews"],data["translations"]
+for c in ["order_purchase_timestamp","order_approved_at","order_delivered_carrier_date","order_delivered_customer_date","order_estimated_delivery_date"]: orders[c]=pd.to_datetime(orders[c],errors="coerce")
+pd.DataFrame([{"table":k,"rows":len(v),"columns":len(v.columns),"missing_cells":int(v.isna().sum().sum()),"duplicate_full_rows":int(v.duplicated().sum())} for k,v in data.items()]).to_csv(OUT/"data_quality_summary.csv",index=False)
+checks={"orders_rows":len(orders),"orders_unique_order_id":int(orders.order_id.nunique()),"items_rows":len(items),"items_unique_composite_key":int(items[["order_id","order_item_id"]].drop_duplicates().shape[0]),"payment_rows":len(payments),"review_rows":len(reviews),"unique_customer_records":int(customers.customer_id.nunique()),"unique_people_customer_unique_id":int(customers.customer_unique_id.nunique())}
+(OUT/"key_data_checks.json").write_text(json.dumps(checks,indent=2),encoding="utf-8")
+order_items=items.groupby("order_id",as_index=False).agg(gmv=("price","sum"),freight=("freight_value","sum"),item_count=("order_item_id","count"))
+ord=orders.merge(order_items,on="order_id",how="left",validate="one_to_one")
+ord["purchase_month"]=ord.order_purchase_timestamp.dt.to_period("M").astype("string")
+monthly=ord.dropna(subset=["purchase_month"]).groupby("purchase_month").agg(orders=("order_id","nunique"),gmv=("gmv","sum"),freight=("freight","sum"),item_rows=("item_count","sum")).reset_index(); monthly["aov"]=monthly.gmv/monthly.orders; monthly.to_csv(OUT/"monthly_sales.csv",index=False,float_format="%.2f")
+cat=items.merge(products[["product_id","product_category_name"]],on="product_id",how="left",validate="many_to_one").merge(translations,on="product_category_name",how="left",validate="many_to_one"); cat["category"]=cat.product_category_name_english.fillna(cat.product_category_name).fillna("unknown")
+cat.groupby("category").agg(gmv=("price","sum"),item_rows=("order_item_id","count"),orders=("order_id","nunique")).reset_index().sort_values("gmv",ascending=False).to_csv(OUT/"category_performance.csv",index=False,float_format="%.2f")
+seller=items.groupby("seller_id").agg(gmv=("price","sum"),item_rows=("order_item_id","count"),orders=("order_id","nunique")).reset_index().merge(sellers[["seller_id","seller_state"]],on="seller_id",how="left",validate="one_to_one").sort_values("gmv",ascending=False); seller.to_csv(OUT/"seller_performance.csv",index=False,float_format="%.2f")
+people=ord.merge(customers[["customer_id","customer_unique_id","customer_state"]],on="customer_id",how="left",validate="many_to_one").groupby("customer_unique_id").agg(orders=("order_id","nunique"),lifetime_gmv=("gmv","sum")).reset_index(); people["customer_type"]=people.orders.map(lambda n:"Repeat" if n>1 else "One-time"); people.to_csv(OUT/"customer_value.csv",index=False,float_format="%.2f")
+payments.groupby("payment_type").agg(payment_records=("order_id","size"),orders=("order_id","nunique"),payment_value=("payment_value","sum"),avg_installments=("payment_installments","mean")).reset_index().sort_values("payment_value",ascending=False).to_csv(OUT/"payment_mix.csv",index=False,float_format="%.2f")
+elig=ord.loc[ord.order_status.eq("delivered")&ord.order_delivered_customer_date.notna()&ord.order_estimated_delivery_date.notna()].copy(); elig["delay_days"]=(elig.order_delivered_customer_date-elig.order_estimated_delivery_date).dt.total_seconds()/86400; elig["delivery_days"]=(elig.order_delivered_customer_date-elig.order_purchase_timestamp).dt.total_seconds()/86400; elig["purchase_year"]=elig.order_purchase_timestamp.dt.year; elig["is_late"]=elig.delay_days>0
+kpis={"eligible_delivered_orders":int(len(elig)),"late_orders":int(elig.is_late.sum()),"on_time_or_early_orders":int((~elig.is_late).sum()),"late_delivery_pct":round(float(elig.is_late.mean()*100),2),"avg_days_vs_estimated":round(float(elig.delay_days.mean()),2),"avg_days_to_customer":round(float(elig.delivery_days.mean()),2)}; (OUT/"delivery_kpis.json").write_text(json.dumps(kpis,indent=2),encoding="utf-8")
+yr=elig.groupby("purchase_year").agg(delivered_orders=("order_id","nunique"),late_orders=("is_late","sum"),late_pct=("is_late","mean"),avg_days_vs_estimated=("delay_days","mean"),avg_delivery_days=("delivery_days","mean")).reset_index(); yr["late_pct"]*=100; yr.to_csv(OUT/"yearly_delivery_performance.csv",index=False,float_format="%.2f")
+st=elig.merge(customers[["customer_id","customer_state"]],on="customer_id",how="left",validate="many_to_one").groupby("customer_state").agg(delivered_orders=("order_id","nunique"),late_orders=("is_late","sum"),late_pct=("is_late","mean")).reset_index(); st["late_pct"]*=100; st.to_csv(OUT/"state_delivery_performance.csv",index=False,float_format="%.2f")
+elig["delay_bucket"]=pd.cut(elig.delay_days,[-float("inf"),0,7,14,30,float("inf")],labels=["On time or early","1-7 days late","8-14 days late","15-30 days late","More than 30 days late"]); elig.groupby("delay_bucket",observed=False).agg(orders=("order_id","nunique")).reset_index().to_csv(OUT/"delivery_delay_distribution.csv",index=False)
+rv=reviews.groupby("order_id",as_index=False).agg(avg_review_score=("review_score","mean")); rr=elig[["order_id","is_late"]].merge(rv,on="order_id",how="inner",validate="one_to_one"); summary=rr.groupby("is_late").agg(orders=("order_id","nunique"),avg_review_score=("avg_review_score","mean")).reset_index(); summary["delivery_group"]=summary.is_late.map({True:"Late",False:"On time or early"}); summary.drop(columns="is_late").to_csv(OUT/"delivery_vs_review_score.csv",index=False,float_format="%.3f")
+plt.figure(figsize=(10,5)); plt.plot(monthly.purchase_month,monthly.gmv); plt.xticks(rotation=60,ha="right"); plt.title("Monthly GMV (item price; freight excluded)"); plt.xlabel("Purchase month"); plt.ylabel("GMV"); plt.tight_layout(); plt.savefig(OUT/"monthly_gmv.png",dpi=160); plt.close()
+top=pd.read_csv(OUT/"category_performance.csv").head(10).sort_values("gmv"); plt.figure(figsize=(10,6)); plt.barh(top.category,top.gmv); plt.title("Top 10 Product Categories by GMV"); plt.xlabel("GMV"); plt.ylabel("Product category"); plt.tight_layout(); plt.savefig(OUT/"top_categories_gmv.png",dpi=160); plt.close()
+print("Analysis complete."); print(json.dumps({"checks":checks,"delivery_kpis":kpis},indent=2))
