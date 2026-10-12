@@ -1,0 +1,10 @@
+{
+  "orders_rows": 99441,
+  "orders_unique_order_id": 99441,
+  "items_rows": 112650,
+  "items_unique_composite_key": 112650,
+  "payment_rows": 103886,
+  "review_rows": 99224,
+  "unique_customer_records": 99441,
+  "unique_people_customer_unique_id": 96096
+}
