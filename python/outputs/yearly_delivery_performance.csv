@@ -1,0 +1,4 @@
+purchase_year,delivered_orders,late_orders,late_pct,avg_days_vs_estimated,avg_delivery_days
+2016,267,4,1.50,-35.75,19.68
+2017,43426,2878,6.63,-11.65,13.03
+2018,52777,4944,9.37,-10.66,12.14
