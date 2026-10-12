@@ -1,0 +1,6 @@
+delay_bucket,orders
+On time or early,88644
+1-7 days late,4481
+8-14 days late,1790
+15-30 days late,1195
+More than 30 days late,360
