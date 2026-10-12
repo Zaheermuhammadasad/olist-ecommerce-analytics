@@ -1,10 +1,9 @@
 # Getting Started
 
-## Download and prepare data
+## 1. Data
+The nine source CSVs are supplied in the downloadable project ZIP under `python/data/`. GitHub intentionally excludes the raw CSVs, especially the large geolocation file.
 
-Download the public Olist Brazilian E-Commerce dataset. Put these CSVs in `python/data/`: orders, customers, order items, products, sellers, payments, reviews, and product category translations. The geolocation CSV is not read by the current script because repeated ZIP prefixes must be aggregated before mapping.
-
-## Run Python analysis
+## 2. Run Python analysis
 
 ```bash
 python3 -m venv .venv
@@ -13,12 +12,13 @@ python -m pip install -r python/requirements.txt
 python python/olist_analysis.py
 ```
 
-The script writes CSV summaries, JSON KPIs and charts into `python/outputs/`.
+On Windows, activate with `.venv\\Scripts\\activate`. The script writes CSV summaries, JSON KPIs and charts into `python/outputs/`.
 
-## Load into MySQL Workbench
+## 3. MySQL Workbench
+Create schema `olist_ecommerce` and import CSVs using their filename without `.csv` for table names. Run the five SQL scripts in `sql/` in numeric order. Confirm Workbench's table names and column types before running queries.
 
-Create schema `olist_ecommerce`. Import each CSV as a table named after the filename without `.csv` (e.g. `olist_orders_dataset`), then execute the SQL files in numeric order. Inspect column types and table names if Workbench imported them differently.
+## 4. Learn the findings
+Read `analysis/business_insights.md`, then trace each claim to its output table and SQL query.
 
-## Study findings and build dashboard
-
-Trace each insight in `analysis/business_insights.md` to its evidence and SQL query. Follow `dashboard/README.md` to build the native report in Power BI or Tableau, then validate the totals against Python outputs.
+## 5. Dashboard
+Follow `dashboard/README.md` to build a native Power BI or Tableau report and validate totals against the Python results.
