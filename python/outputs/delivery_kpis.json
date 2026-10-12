@@ -1,0 +1,8 @@
+{
+  "eligible_delivered_orders": 96470,
+  "late_orders": 7826,
+  "on_time_or_early_orders": 88644,
+  "late_delivery_pct": 8.11,
+  "avg_days_vs_estimated": -11.18,
+  "avg_days_to_customer": 12.56
+}
