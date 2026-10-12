@@ -1,42 +1,99 @@
-# Olist E-Commerce Analytics
+# Olist E-commerce Analytics Portfolio
 
-An end-to-end analytics portfolio project using the Brazilian E-Commerce Public Dataset by Olist. It demonstrates practical SQL, Python/Pandas, data-quality analysis, business interpretation and BI dashboard planning.
+An end-to-end e-commerce analytics project using the Brazilian E-Commerce Public Dataset by Olist. The project demonstrates SQL data validation, Python/Pandas analysis, an interactive dashboard, and evidence-based business recommendations.
 
-## Business questions
+**Tools:** MySQL · SQL · Python · Pandas · Plotly · GitHub
 
-- How do order volume, GMV and average order value change over time?
-- Which product categories and sellers generate the most item-price GMV?
-- What proportion of customers place more than one order?
-- Which payment methods and installment patterns are common?
+**[Open the interactive dashboard](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Zaheermuhammadasad/olist-ecommerce-analytics/main/dashboard/olist_recruiter_dashboard.html)** · **[View business insights](analysis/business_insights.md)** · **[Read setup instructions](documentation/getting_started.md)**
+
+## Project overview
+
+The analysis explores sales performance, product categories, customers, payment methods, delivery reliability, and customer reviews. It connects data preparation and analysis to practical operational and commercial questions.
+
+### Business questions
+
+- How do order volumes and item-price GMV vary over time?
+- Which product categories contribute the most item-price GMV?
+- What payment methods are used most often and account for the highest payment value?
 - How does delivery performance vary by year and customer state?
-- How does delivery lateness relate to review scores?
+- How are delivery delays associated with customer review scores?
+- What data-quality checks are necessary before drawing conclusions?
 
-## Workflow
+## Key findings
 
-**Data understanding → data quality → SQL analysis → Python analysis → business insights → BI dashboard → recommendations**
+| Metric / finding | Result |
+|---|---:|
+| Orders | 99,441 |
+| Order-item records | 112,650 |
+| Item-price GMV, excluding freight | Approximately R$13.592 million |
+| Eligible delivered orders in delivery analysis | 96,470 |
+| Late deliveries among eligible orders | 7,826 |
+| Late-delivery rate | 8.11% |
+| Average purchase-to-delivery time | 12.56 days |
+| Late-delivery rate in 2016 | 1.50% |
+| Late-delivery rate in 2017 | 6.63% |
+| Late-delivery rate in 2018 | 9.37% |
+| Average review score: late orders | 2.567 / 5 |
+| Average review score: on-time / early orders | 4.294 / 5 |
 
-## Dataset
+**Interpretation:** Late-delivery rates increased across the observed years, and late orders had lower average review scores. These are descriptive associations; they do not, by themselves, establish why delays increased or prove that delays alone caused lower ratings.
 
-The public dataset has nine related CSV tables. The full raw CSV files are included in the downloadable project ZIP under `python/data/` and excluded from this GitHub repository because the geolocation file is large. Download the Olist Brazilian E-Commerce dataset separately and put the required CSVs in `python/data/` to run the Python script. The SQL scripts expect tables imported into MySQL using their base filenames (without `.csv`).
+Other findings include high item-price GMV in Health & Beauty and Watches & Gifts, and substantial geographic variation in delivery risk by customer state. See the business-insights document for evidence, recommendations, and caveats.
 
-## Repository contents
+## Interactive dashboard
 
-- `sql/` — data quality, sales, customer, delivery, payment and review queries.
-- `python/olist_analysis.py` — reproducible Pandas workflow.
-- `python/requirements.txt` — dependencies.
-- `analysis/business_insights.md` — evidence-based findings and recommendations.
-- `documentation/data_dictionary.md` — grains, relationships and definitions.
-- `documentation/getting_started.md` — setup steps.
-- `dashboard/README.md` — Power BI/Tableau dashboard specification.
+The repository includes a browser-based Plotly dashboard with KPI cards and interactive charts for:
 
-## Validated results from the supplied dataset
+- Late-delivery rate by year
+- Top product categories by item-price GMV
+- Payment value mix
+- Delivery-delay distribution
+- Average review score by delivery performance
 
-- 99,441 orders and 99,441 unique order IDs.
-- 112,650 order-item rows and 112,650 unique composite item keys.
-- Item-price GMV: approximately 13.592 million, excluding freight.
-- Strict delivery-performance population: 96,470 delivered orders with both actual and estimated timestamps.
-- Late deliveries: 7,826, or 8.11% of the strict delivery-performance population.
-- Average purchase-to-delivery duration for that population: 12.56 days.
-- Late-delivered orders have lower average review scores than orders delivered on or before their estimate.
+**[Launch the dashboard preview](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Zaheermuhammadasad/olist-ecommerce-analytics/main/dashboard/olist_recruiter_dashboard.html)**
 
-Metric definitions and eligibility filters are documented. Results are descriptive, not causal. A native Power BI/Tableau report must still be built separately using the dashboard specification.
+The preview uses a third-party HTML preview service and loads Plotly from a CDN. The dashboard source is available in the repository at dashboard/olist_recruiter_dashboard.html. This is a web dashboard, not a native Power BI PBIX or Tableau TWB report.
+
+## Repository structure
+
+- **sql/** — SQL scripts for data-quality checks, sales, customer, delivery, payments, and reviews.
+- **python/olist_analysis.py** — reproducible Pandas workflow.
+- **python/requirements.txt** — Python dependencies.
+- **analysis/business_insights.md** — findings, evidence, business implications, and recommendations.
+- **documentation/data_dictionary.md** — table grains, relationships, KPI definitions, and caveats.
+- **documentation/getting_started.md** — setup and execution instructions.
+- **dashboard/** — interactive dashboard source and dashboard KPI specification.
+- **documentation/cv_linkedin_project_entry.md** — copy-ready CV and LinkedIn project descriptions.
+
+## Run the Python analysis
+
+1. Install Python 3.10 or later.
+2. Download the [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce).
+3. Place the required CSV files in **python/data/** using their original filenames.
+4. Install dependencies and run the script:
+
+   **pip install -r python/requirements.txt**
+
+   **python python/olist_analysis.py**
+
+5. Review the generated files in **python/outputs/**.
+
+See documentation/getting_started.md for the detailed workflow and MySQL import guidance. The raw data is not stored in this repository; download it from the dataset source and follow the setup guide.
+
+## Data definitions and quality notes
+
+- **GMV** here means the sum of item prices; freight is excluded. It is not profit or contribution margin.
+- Delivery analysis includes orders marked delivered that have both actual and estimated delivery timestamps.
+- Eight records marked delivered lack an actual delivery timestamp and are excluded from the strict delivery-performance denominator.
+- An order is late only when its actual delivery timestamp is strictly later than the estimated timestamp.
+- Reviews are aggregated to the order level before comparing them with delivery performance.
+- State comparisons should include order volume and use a minimum-volume threshold.
+- The dataset is historical and observational; results should not be treated as causal evidence.
+
+## Skills demonstrated
+
+SQL querying and joins · Data-quality validation · KPI definition · Python/Pandas data wrangling · Exploratory analysis · Visual communication · Business interpretation · Reproducible documentation
+
+## Contact / portfolio
+
+This project is intended as a practical portfolio example for Data Analyst, Business Analyst, E-commerce Analyst, and Marketing Analytics applications. See the owner's GitHub profile for related work.
