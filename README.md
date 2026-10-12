@@ -6,6 +6,8 @@ An end-to-end e-commerce analytics project using the Brazilian E-Commerce Public
 
 **[Open the interactive dashboard](https://htmlpreview.github.io/?https://github.com/Zaheermuhammadasad/olist-ecommerce-analytics/blob/main/dashboard/olist_recruiter_dashboard.html)** · **[View business insights](analysis/business_insights.md)** · **[Read setup instructions](documentation/getting_started.md)**
 
+![Olist E-commerce Analytics dashboard preview](dashboard/dashboard_preview.svg)
+
 ## Project overview
 
 The analysis explores sales performance, product categories, customers, payment methods, delivery reliability, and customer reviews. It connects data preparation and analysis to practical operational and commercial questions.
@@ -42,17 +44,11 @@ Other findings include high item-price GMV in Health & Beauty and Watches & Gift
 
 ## Interactive dashboard
 
-The repository includes a browser-based Plotly dashboard with KPI cards and interactive charts for:
-
-- Late-delivery rate by year
-- Top product categories by item-price GMV
-- Payment value mix
-- Delivery-delay distribution
-- Average review score by delivery performance
+The repository includes a browser-based Plotly dashboard with KPI cards and interactive charts for late-delivery rate by year, top product categories, payment value mix, delay distribution, and review score by delivery performance.
 
 **[Launch the dashboard preview](https://htmlpreview.github.io/?https://github.com/Zaheermuhammadasad/olist-ecommerce-analytics/blob/main/dashboard/olist_recruiter_dashboard.html)**
 
-The preview uses a third-party HTML preview service and loads Plotly from a CDN. The dashboard source is available in the repository at dashboard/olist_recruiter_dashboard.html. This is a web dashboard, not a native Power BI PBIX or Tableau TWB report.
+The preview uses a third-party HTML preview service and loads Plotly from a CDN. The dashboard source is available in dashboard/olist_recruiter_dashboard.html. This is a web dashboard, not a native Power BI PBIX or Tableau TWB report.
 
 ## Repository structure
 
@@ -62,8 +58,8 @@ The preview uses a third-party HTML preview service and loads Plotly from a CDN.
 - **analysis/business_insights.md** — findings, evidence, business implications, and recommendations.
 - **documentation/data_dictionary.md** — table grains, relationships, KPI definitions, and caveats.
 - **documentation/getting_started.md** — setup and execution instructions.
-- **dashboard/** — interactive dashboard source and dashboard KPI specification.
 - **documentation/cv_linkedin_project_entry.md** — copy-ready CV and LinkedIn project descriptions.
+- **dashboard/** — interactive dashboard HTML, visual preview, and KPI specification.
 
 ## Run the Python analysis
 
