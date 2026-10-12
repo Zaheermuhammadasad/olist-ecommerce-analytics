@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Olist E-commerce Analytics Dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+body{margin:0;font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#172033}.wrap{max-width:1280px;margin:auto;padding:28px}h1{margin:0 0 6px;font-size:30px}.sub{color:#667085;margin-bottom:24px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.card{background:#fff;border:1px solid #e6eaf0;border-radius:14px;padding:18px;box-shadow:0 2px 8px #00000008}.label{font-size:12px;color:#667085}.value{font-size:25px;font-weight:700;margin-top:7px}.section{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px}.wide{grid-column:1/-1}.chart{background:#fff;border:1px solid #e6eaf0;border-radius:14px;padding:8px}.insights{background:#101828;color:#fff;border-radius:14px;padding:22px}.insights li{margin:10px 0}@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.section{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Olist E-commerce Analytics</h1>
+<div class="sub">Recruiter-facing portfolio dashboard • Sales, customers, delivery and reviews • Brazil</div>
+<div class="grid">
+<div class="card"><div class="label">Orders</div><div class="value">99,441</div></div>
+<div class="card"><div class="label">Item-price GMV</div><div class="value">R$13.59M</div></div>
+<div class="card"><div class="label">Delivered orders analysed</div><div class="value">96,470</div></div>
+<div class="card"><div class="label">Late delivery rate</div><div class="value">8.11%</div></div>
+<div class="card"><div class="label">Avg. purchase → delivery</div><div class="value">12.56 days</div></div>
+</div>
+<div class="section">
+<div class="chart wide" id="year"></div><div class="chart" id="category"></div><div class="chart" id="payment"></div><div class="chart" id="delay"></div><div class="chart" id="reviews"></div>
+<div class="insights"><h2>Business insights</h2><ul><li>Late delivery increased from <b>1.50%</b> in 2016 to <b>9.37%</b> in 2018.</li><li>Late orders averaged <b>2.57/5</b> reviews versus <b>4.29/5</b> for on-time/early orders.</li><li><b>Health &amp; Beauty</b> and <b>Watches &amp; Gifts</b> were the largest categories by item-price GMV.</li><li>Credit cards represented the dominant payment method by payment value.</li><li>Delivery risk varies materially by customer state, supporting geographic operations monitoring.</li></ul></div>
+</div></div>
+<script>
+const base={paper_bgcolor:"white",plot_bgcolor:"white",margin:{l:55,r:25,t:55,b:55},font:{family:"Arial"}};
+Plotly.newPlot("year",[{x:["2016","2017","2018"],y:[1.50,6.63,9.37],type:"bar",text:["1.50%","6.63%","9.37%"],textposition:"auto"}],{...base,title:"Late Delivery Rate by Year",yaxis:{title:"Late delivery %"}});
+Plotly.newPlot("category",[{x:["Health & Beauty","Watches & Gifts","Bed Bath Table","Sports Leisure","Computers Accessories"],y:[1258681,1205006,1036989,988049,911954],type:"bar"}],{...base,title:"Top Categories by Item-price GMV",yaxis:{title:"GMV (R$)"},xaxis:{tickangle:-25}});
+Plotly.newPlot("payment",[{labels:["Credit Card","Boleto","Voucher","Debit Card"],values:[12542084,2869361,379437,217990],type:"pie",hole:.45}],{...base,title:"Payment Value Mix"});
+Plotly.newPlot("delay",[{x:["On time / early","1–7 days","8–14 days","15–30 days",">30 days"],y:[88644,4481,1790,1195,360],type:"bar"}],{...base,title:"Delivery Delay Distribution",yaxis:{title:"Orders"}});
+Plotly.newPlot("reviews",[{x:["Late orders","On-time / early orders"],y:[2.567,4.294],type:"bar",text:["2.57","4.29"],textposition:"auto"}],{...base,title:"Average Review Score vs Delivery Performance",yaxis:{title:"Average review score (1–5)",range:[0,5]}});
+</script>
+</body></html>
