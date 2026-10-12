@@ -1,68 +1,41 @@
--- Olist E-Commerce Analytics
--- 01 - Data Quality Checks
--- MySQL 8+
-
+-- 01_data_quality.sql — MySQL 8+
 USE olist_ecommerce;
 
--- Expected full-dataset tables:
--- customers, orders, order_items, order_payments, order_reviews,
--- products, sellers, geolocation, product_category_name_translation
+-- Import the Olist CSVs as tables with their base filenames (without .csv).
+SELECT 'orders' table_name, COUNT(*) row_count FROM olist_orders_dataset
+UNION ALL SELECT 'customers', COUNT(*) FROM olist_customers_dataset
+UNION ALL SELECT 'order_items', COUNT(*) FROM olist_order_items_dataset
+UNION ALL SELECT 'products', COUNT(*) FROM olist_products_dataset
+UNION ALL SELECT 'sellers', COUNT(*) FROM olist_sellers_dataset
+UNION ALL SELECT 'payments', COUNT(*) FROM olist_order_payments_dataset
+UNION ALL SELECT 'reviews', COUNT(*) FROM olist_order_reviews_dataset
+UNION ALL SELECT 'geolocation', COUNT(*) FROM olist_geolocation_dataset
+UNION ALL SELECT 'category_translation', COUNT(*) FROM product_category_name_translation;
 
-SELECT COUNT(*) AS total_rows,
-       COUNT(DISTINCT order_id) AS unique_orders,
-       COUNT(*) - COUNT(DISTINCT order_id) AS duplicate_order_rows
-FROM orders;
+SELECT COUNT(*) total_rows, COUNT(DISTINCT order_id) unique_orders,
+       COUNT(*)-COUNT(DISTINCT order_id) duplicate_order_rows
+FROM olist_orders_dataset;
 
-SELECT order_status, COUNT(*) AS orders
-FROM orders
-GROUP BY order_status
-ORDER BY orders DESC;
+SELECT COUNT(*) total_item_rows,
+       COUNT(DISTINCT CONCAT(order_id, '-', order_item_id)) unique_item_keys,
+       COUNT(*)-COUNT(DISTINCT CONCAT(order_id, '-', order_item_id)) duplicate_item_keys
+FROM olist_order_items_dataset;
 
-SELECT
-    SUM(order_purchase_timestamp IS NULL) AS null_purchase_timestamp,
-    SUM(order_approved_at IS NULL) AS null_approved_at,
-    SUM(order_delivered_carrier_date IS NULL) AS null_carrier_date,
-    SUM(order_delivered_customer_date IS NULL) AS null_customer_delivery,
-    SUM(order_estimated_delivery_date IS NULL) AS null_estimated_delivery
-FROM orders;
+SELECT SUM(order_purchase_timestamp IS NULL) missing_purchase_timestamp,
+       SUM(order_delivered_customer_date IS NULL) missing_actual_delivery,
+       SUM(order_estimated_delivery_date IS NULL) missing_estimated_delivery
+FROM olist_orders_dataset;
 
-SELECT COUNT(*) AS invalid_timestamp_sequences
-FROM orders
-WHERE order_approved_at IS NOT NULL
-  AND order_purchase_timestamp IS NOT NULL
-  AND order_approved_at < order_purchase_timestamp;
+SELECT order_status, COUNT(*) orders,
+       ROUND(100.0*COUNT(*)/(SELECT COUNT(*) FROM olist_orders_dataset),2) pct_all_orders
+FROM olist_orders_dataset GROUP BY order_status ORDER BY orders DESC;
 
-SELECT COUNT(*) AS invalid_delivery_sequences
-FROM orders
-WHERE order_delivered_customer_date IS NOT NULL
-  AND order_delivered_carrier_date IS NOT NULL
-  AND order_delivered_customer_date < order_delivered_carrier_date;
+SELECT COUNT(*) customer_rows, COUNT(DISTINCT customer_id) unique_customer_ids,
+       COUNT(DISTINCT customer_unique_id) unique_people
+FROM olist_customers_dataset;
 
-SELECT COUNT(*) AS order_rows,
-       SUM(c.customer_id IS NULL) AS missing_customer_dimension_rows
-FROM orders o
-LEFT JOIN customers c ON c.customer_id = o.customer_id;
-
-SELECT COUNT(*) AS order_item_rows,
-       COUNT(DISTINCT oi.order_id) AS orders_with_items,
-       SUM(o.order_id IS NULL) AS orphan_order_items
-FROM order_items oi
-LEFT JOIN orders o ON o.order_id = oi.order_id;
-
-SELECT COUNT(*) AS payment_rows,
-       COUNT(DISTINCT op.order_id) AS orders_with_payments,
-       SUM(o.order_id IS NULL) AS orphan_payments
-FROM order_payments op
-LEFT JOIN orders o ON o.order_id = op.order_id;
-
-SELECT COUNT(*) AS review_rows,
-       COUNT(DISTINCT r.order_id) AS reviewed_orders,
-       SUM(o.order_id IS NULL) AS orphan_reviews
-FROM order_reviews r
-LEFT JOIN orders o ON o.order_id = r.order_id;
-
-SELECT SUM(p.product_id IS NULL) AS orphan_product_items,
-       SUM(s.seller_id IS NULL) AS orphan_seller_items
-FROM order_items oi
-LEFT JOIN products p ON p.product_id = oi.product_id
-LEFT JOIN sellers s ON s.seller_id = oi.seller_id;
+SELECT SUM(i.product_id IS NOT NULL AND p.product_id IS NULL) missing_product_refs,
+       SUM(i.seller_id IS NOT NULL AND s.seller_id IS NULL) missing_seller_refs
+FROM olist_order_items_dataset i
+LEFT JOIN olist_products_dataset p ON i.product_id=p.product_id
+LEFT JOIN olist_sellers_dataset s ON i.seller_id=s.seller_id;
