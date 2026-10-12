@@ -1,60 +1,80 @@
 # Olist E-Commerce Analytics
 
-## Project Overview
+An end-to-end analytics portfolio project using the Brazilian E-Commerce Public Dataset by Olist. The project demonstrates practical **SQL, Python, data-quality, business-analysis and BI dashboarding** skills.
 
-End-to-end e-commerce analytics project using SQL, Python and Business Intelligence to analyze sales, customers, products, sellers, payments, delivery performance and customer satisfaction.
+## Business Questions
 
-The project uses the Brazilian E-Commerce Public Dataset by Olist and follows a complete analytics workflow:
+1. **Sales:** How do orders, GMV and average order value change over time?
+2. **Customers:** Who are the highest-value customers and how strong is repeat purchasing?
+3. **Products & Sellers:** Which categories and sellers drive revenue and order volume?
+4. **Payments:** Which payment methods and installment patterns are most common?
+5. **Operations & CX:** Where are delivery delays concentrated, and how do delays relate to review scores?
 
-**Data Understanding → Data Quality → SQL Analysis → Business Insights → BI Dashboard → Recommendations**
+## Workflow
 
-## Business Objectives
+**Data Understanding → Data Quality → SQL Analysis → Python EDA → Business Insights → BI Dashboard → Recommendations**
 
-The analysis aims to answer key business questions such as:
-
-- How is sales performance changing over time?
-- Which product categories and sellers generate the most revenue?
-- Who are the highest-value and repeat customers?
-- How do payment methods and installments vary?
-- What factors are associated with delivery delays?
-- How is delivery performance related to customer satisfaction?
-- What business opportunities can be identified from the data?
+Every recommendation should be traceable to a reproducible metric or query.
 
 ## Dataset
 
-**Source:** Brazilian E-Commerce Public Dataset by Olist
+Source: Brazilian E-Commerce Public Dataset by Olist.
 
-The dataset contains approximately 100,000 orders and multiple related tables covering:
+The full public dataset contains approximately 100k orders and related tables for customers, orders, order items, products, sellers, payments, reviews, geolocation and category translations.
 
-- Customers
-- Orders
-- Order Items
-- Products
-- Sellers
-- Payments
-- Reviews
-- Geolocation
-- Product Category Translations
+**Raw CSV files are intentionally not committed to GitHub.** Download the public dataset separately and load it into MySQL using `documentation/data_dictionary.md`.
 
-The raw dataset is not stored in this repository.
-
-## Tools & Technologies
-
-- SQL
-- Python
-- pandas
-- Power BI / Tableau
-- Excel
-- GitHub
-
-## Project Structure
+## Repository Structure
 
 ```text
 olist-ecommerce-analytics/
-│
 ├── README.md
 ├── sql/
+│   ├── 01_data_quality.sql
+│   ├── 02_sales_analysis.sql
+│   ├── 03_customer_analysis.sql
+│   ├── 04_delivery_analysis.sql
+│   └── 05_payment_review_analysis.sql
 ├── python/
+│   ├── olist_analysis.py
+│   ├── load_to_mysql.py
+│   ├── requirements.txt
+│   └── README.md
 ├── dashboard/
+│   └── README.md
 ├── analysis/
+│   └── business_insights.md
 └── documentation/
+    └── data_dictionary.md
+```
+
+## SQL Layer
+
+The SQL layer covers row counts and duplicates, order-status distribution, monthly sales and GMV, AOV, category and seller performance, customer value and repeat purchasing, payment methods and installments, delivery performance, state-level delivery risk, delay buckets, review scores and delivery-vs-satisfaction analysis.
+
+Queries explicitly control grain so that one-to-many joins do not inflate order-level metrics.
+
+## Python Layer
+
+`python/olist_analysis.py` provides a reproducible Pandas workflow for loading the Olist CSV files, validating types, profiling missing values, creating core KPIs, analysing monthly sales and delivery performance, and exporting tables/charts.
+
+## Dashboard
+
+The recommended Power BI/Tableau dashboard has four pages:
+
+- **Executive Overview:** Orders, GMV, AOV, customers, review score
+- **Sales & Products:** monthly trend, category revenue, seller performance
+- **Customers & Payments:** customer segments, repeat rate, payment methods and installments
+- **Operations & CX:** delivery performance, delay distribution, state-level risk, review-score impact
+
+See `dashboard/README.md` for KPI definitions and the visual specification.
+
+## Development Note
+
+The MySQL schema used during development initially contained only a subset of the Olist tables. Order-level delivery analysis can therefore be performed on that subset, but product/category/seller/payment/review analysis requires the corresponding Olist tables to be loaded first. The repository does not invent results for tables that are not present.
+
+## Portfolio Outcome
+
+The target is a complete analyst workflow:
+
+**clean data → reproducible SQL → Python analysis → business insights → decision-ready dashboard recommendations.**
