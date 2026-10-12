@@ -2,7 +2,7 @@
 
 ## Open the dashboard
 
-**[Launch the interactive dashboard preview](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Zaheermuhammadasad/olist-ecommerce-analytics/main/dashboard/olist_recruiter_dashboard.html)**
+**[Launch the interactive dashboard preview](https://htmlpreview.github.io/?https://github.com/Zaheermuhammadasad/olist-ecommerce-analytics/blob/main/dashboard/olist_recruiter_dashboard.html)**
 
 Source file: olist_recruiter_dashboard.html
 
