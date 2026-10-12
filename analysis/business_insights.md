@@ -1,46 +1,55 @@
-# Business Insights
+# Business Insights — Olist E-Commerce
 
-This file records evidence-based findings. Results must be generated from the loaded Olist data and the SQL/Python scripts; no unsupported metrics are hard-coded.
+The results below were calculated from the supplied Olist CSV files. They are descriptive, not causal. The reproducible calculation script and exported tables are in the Python folder and project ZIP.
 
-## Finding 1 — Delivery reliability is a material operational KPI
+## 1. Late delivery rate increased over the observed years
 
-**Finding:** Delivery performance should be monitored by year, state and delay severity.
+**Finding:** Late delivery rates for eligible delivered orders were 1.50% in 2016, 6.63% in 2017, and 9.37% in 2018.
 
-**Evidence:** `sql/04_delivery_analysis.sql` calculates on-time/late performance, yearly late rate, delay buckets and state-level late rates.
+**Evidence:** 4/267 eligible delivered orders were late in 2016; 2,878/43,426 in 2017; and 4,944/52,777 in 2018. Overall, 7,826/96,470 were late (8.11%).
 
-**Business implication:** A single national delivery KPI can hide regional operational risk.
+**Implication:** The delivery experience became less reliable across the period with the largest order volume; these data alone do not identify the cause.
 
-**Recommendation:** Use state-level late-delivery rate and severe-delay share to prioritise logistics investigation.
+**Recommendation:** Monitor late rate and absolute late-order volume together by month, customer state and seller; investigate shipping promises and carrier performance.
 
-## Finding 2 — Delivery experience should be linked to customer satisfaction
+## 2. Late deliveries are associated with lower review scores
 
-**Finding:** Delivery delay and review score should be analysed together rather than in isolation.
+**Finding:** Late-delivered orders had a much lower average review score than on-time/early deliveries.
 
-**Evidence:** `sql/05_payment_review_analysis.sql` joins delivery status to order-level review scores and also compares review scores across delay buckets.
+**Evidence:** Average review score was 4.294 for 88,163 on-time/early reviewed eligible orders and 2.567 for 7,661 late reviewed eligible orders.
 
-**Business implication:** If delayed orders show materially lower reviews, delivery reliability is also a customer-experience issue.
+**Implication:** Delivery timeliness and satisfaction are associated, but this comparison does not prove lateness alone caused lower ratings.
 
-**Recommendation:** Set an operational target for on-time delivery and monitor review impact alongside it.
+**Recommendation:** Test proactive communication and at-risk shipment interventions; measure their effect on lateness and satisfaction.
 
-## Finding 3 — One-to-many joins require explicit grain control
+## 3. Delivery risk differs by customer state
 
-**Finding:** Order-level KPIs can be inflated when orders are joined directly to order items, payments or reviews.
+**Evidence:** Among states with at least 100 eligible delivered orders, AL had 23.93% late (95/397), MA 19.67% (141/717), PI 15.97% (76/476), CE 15.32% (196/1,279), and BA 14.04% (457/3,256), compared with 8.11% overall.
 
-**Evidence:** The SQL scripts aggregate one-to-many tables before calculating order-level KPIs where appropriate.
+**Implication:** A national average masks geographic variation.
 
-**Business implication:** Incorrect join grain can produce misleading GMV, order and customer metrics.
+**Recommendation:** Investigate routes, seller/carrier coverage and estimated delivery promise accuracy in the highest-risk states; use minimum-volume thresholds.
 
-**Recommendation:** Define the grain of every KPI before building the dashboard.
+## 4. Health & Beauty and Watches & Gifts lead category GMV
 
-## Findings to Populate After Full Dataset Load
+**Evidence:** Item-price GMV was approximately 1.259 million for health_beauty, 1.205 million for watches_gifts, and 1.037 million for bed_bath_table. Freight is excluded.
 
-- Highest-GMV categories
-- Highest-GMV sellers
-- Monthly GMV growth and seasonality
-- Repeat-customer rate
-- Highest-value customer segments
-- Payment-method and installment patterns
-- Review-score distribution
-- Quantified relationship between delivery delay and review score
+**Implication:** Category sales concentration can guide merchandising, but GMV does not represent profit or marketing return.
 
-Use the format **Finding → Evidence → Business Implication → Recommendation** for each final finding.
+**Recommendation:** Compare GMV against contribution margin, campaign cost and returns before changing spend.
+
+## 5. Credit cards dominate payment value
+
+**Evidence:** Credit-card payment value totalled approximately 12.542 million across 76,505 distinct orders; boleto totalled approximately 2.869 million across 19,784 orders.
+
+**Implication:** Payment mix and installments matter to checkout design. Payment record value is not the same metric as item-price GMV.
+
+**Recommendation:** Monitor conversion and payment failure rates by type, and evaluate installment use alongside margin and basket size.
+
+## Data-quality caveats
+
+- 99,441 order rows and 99,441 distinct order IDs.
+- 112,650 order-item rows and 112,650 unique (order_id, order_item_id) keys.
+- Delivery KPI eligibility requires delivered status and non-null actual and estimated timestamps. There are 96,470 eligible orders; eight delivered-status rows lack an actual delivery date and are excluded.
+- Delay is actual delivery timestamp minus estimated timestamp; strictly positive means late.
+- Reviews are averaged per order before comparing with delivery data.
